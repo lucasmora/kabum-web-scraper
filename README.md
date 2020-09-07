@@ -6,6 +6,12 @@ Este web scraper tem como objetivo extrair informações de preço e descriçõe
 - BeautifulSoup 4.9.1 (com *requests 2.24* para baixar as páginas do servidor)
 - Pandas 1.1.1 (para formatar e exportar os dados extraídos)
 
+## Argumentos de linha de comando
+É possível fazer a pesquisa com uma capacidade específica (em GB) através da opção *-c*.
+```
+[-c <capacidade_em_gb>]
+```
+
 ## Atributos extraídos
 Os atributos de cada produto foram deliberadamente selecionados:
 - Título do anúncio
@@ -15,6 +21,5 @@ Os atributos de cada produto foram deliberadamente selecionados:
 - Quantidade de avaliações recebidas
 
 ## Problemas e erros conhecidos
-- Por algum motivo, as vezes ao executar o script, o Selenium não encontra a id da listagem de produtos e retorna uma exceção. Isso pode ser contornado executando o código novamente.
 
-#TODO: Melhorar o tratamento de exceções
+*TODO: Melhorar o tratamento de exceções*
