@@ -1,6 +1,6 @@
-# Web Scraper - Memórias RAM
+# Web Scraper - Kabum!
 
-Este web scraper tem como objetivo extrair informações de preço e descrições de memórias RAM do site Kabum. Os dados são exportados para um arquivo .CSV, facilitando a análise posterior.
+Este web scraper tem como objetivo extrair informações de preço e descrições de produtos do site [Kabum!](https://www.kabum.com.br). Os dados são exportados para um arquivo .CSV, facilitando a análise posterior.
 
 ## Bibliotecas e dependências
 
@@ -18,7 +18,3 @@ Os atributos de cada produto foram deliberadamente selecionados:
 - Preço à prazo
 - Avaliação (número de estrelas)
 - Quantidade de avaliações recebidas
-
-## Problemas e erros conhecidos
-
-*TODO: Melhorar o tratamento de exceções*
