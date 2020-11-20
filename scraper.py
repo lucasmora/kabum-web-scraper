@@ -6,20 +6,15 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# Obtendo os argumentos de linha de comando
-try:
-    capacidade = getopt.getopt(sys.argv[1:], 'c:')[0][0][1]
-    pesquisa = 'Memória RAM {}gb'.format(capacidade)
-except IndexError as e:
-    print('Nenhum parâmetro fornecido. Pesquisando com 8GB (padrão)...')
-    pesquisa = 'Memória RAM 8gb'
+site = 'https://www.kabum.com.br/'
+termo_pesquisa = 'Memoria RAM 8gb'
 
 # Configurando o webdriver e inserindo o termo de busca (Memória RAM 8gb)
 nav = webdriver.Firefox()
-nav.get('https://www.kabum.com.br/')
+nav.get()
 
 campo_busca = nav.find_element_by_class_name('sprocura')
-campo_busca.send_keys(pesquisa)
+campo_busca.send_keys(termo_pesquisa)
 campo_busca.send_keys(Keys.ENTER)
 
 # Aguarda 1 segundo para completar o carregamento
