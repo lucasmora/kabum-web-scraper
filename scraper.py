@@ -3,11 +3,12 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import pandas as pd
+import datetime
 
 site = 'https://www.kabum.com.br/'
 termo_pesquisa = 'Memoria RAM 8gb'
 n_pgs = 5  # Número de páginas a serem lidas
-nome_arquivo = "memoria_ram_8gb.csv"  # Nome do arquivo a ser exportado
+nome_arquivo = "{}.csv".format(datetime.datetime.now().strftime("%d%m%Y%H%M"))  # Nome do arquivo a ser exportado
 
 # Configurando o webdriver e inserindo o termo de busca (Memória RAM 8gb)
 nav = webdriver.Firefox()
