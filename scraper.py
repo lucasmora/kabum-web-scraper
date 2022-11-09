@@ -49,8 +49,7 @@ while True:
             preco_a_vista = i.find('span', {'class': 'priceCard'}).text
             avaliacao = len(i.find_all('div', {'class': 'estrelaAvaliacao'}))
             qtde_avaliacao = i.find('div', {'class': 'labelTotalAvaliacoes'})
-            if qtde_avaliacao is not None:
-                qtde_avaliacao = qtde_avaliacao.text[1:-1]
+            qtde_avaliacao = qtde_avaliacao.text[1:-1] if qtde_avaliacao is not None else 0
         
             titulos.append(titulo)
             precos_a_vista.append(preco_a_vista)
