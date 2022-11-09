@@ -45,7 +45,7 @@ while True:
         sopa = BeautifulSoup(html, 'lxml')
         
         for i in sopa.find_all('div', {'class': 'productCard'}):
-            titulo = i.find('h2', {'class': 'nameCard'}).text
+            titulo = i.find('span', {'class': 'nameCard'}).text
             preco_a_vista = i.find('span', {'class': 'priceCard'}).text
             avaliacao = len(i.find_all('div', {'class': 'estrelaAvaliacao'}))
             qtde_avaliacao = i.find('div', {'class': 'labelTotalAvaliacoes'})
