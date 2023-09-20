@@ -1,26 +1,34 @@
 import time
+import datetime
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-import pandas as pd
-import datetime
 
-site = 'https://www.kabum.com.br/'
-termo_pesquisa = 'Placa de vídeo 4gb'
-n_pgs = 5  # Número de páginas a serem lidas
-nome_arquivo = "{}_{}.csv".format(termo_pesquisa, datetime.datetime.now().strftime("%d%m%Y%H%M"))  # Nome do arquivo a ser exportado
+# Constantes
+SITE_URL = 'https://www.kabum.com.br/'
+TERMO_PESQUISA = 'Processador'
+NUM_PAGS = 5
+NOME_ARQUIVO = "{}_{}.csv".format(TERMO_PESQUISA, datetime.datetime.now().strftime("%d%m%Y%H%M"))
 
-# Configurando o webdriver e inserindo o termo de busca (Memória RAM 8gb)
-nav = webdriver.Firefox()
-nav.get(site)
+def extrair_infos_produto(produto):
+    titulo = produto.find('span', class_='nameCard').text
+    preco_a_vista = float(produto.find('span', class_='priceCard').text.split('R$')[1].replace('.', '').replace(',', '.'))
+    avaliacao = len(produto.find_all('div', class_='estrelaAvaliacao'))
+    qtde_avaliacao = int(produto.find('div', class_='labelTotalAvaliacoes').text[1:-1]) if produto.find('div', class_='labelTotalAvaliacoes') else 0
+    return titulo, preco_a_vista, avaliacao, qtde_avaliacao
 
-campo_busca = nav.find_element(By.ID, value='input-busca')
-campo_busca.send_keys(termo_pesquisa)
+# Inicializando o webdriver
+driver = webdriver.Firefox()
+driver.get(SITE_URL)
+
+# Buscar
+campo_busca = driver.find_element(By.ID, value='input-busca')
+campo_busca.send_keys(TERMO_PESQUISA)
 campo_busca.send_keys(Keys.ENTER)
-time.sleep(1)
 
-# Cada atributo será armazenado numa lista correspondente
+# Listas para armazenar os dados
 titulos = []
 precos_a_vista = []
 avaliacoes = []
@@ -28,62 +36,53 @@ qtde_avaliacoes = []
 
 # Inicia o loop de cada página
 p = 1
-while True:
+while p <= NUM_PAGS:
     try:
         time.sleep(2)
         print(f"Lendo página {p}...")
 
         # Inicia a extração das informações
         try:
-            html = nav.find_elements(By.TAG_NAME, 'main')[0]
+            html = driver.find_elements(By.TAG_NAME, 'main')[0]
         except IndexError as ie:
-            nav.refresh()
+            driver.refresh()
             continue
 
         html = html.get_attribute("innerHTML")
 
         sopa = BeautifulSoup(html, 'lxml')
         
-        for i in sopa.find_all('div', {'class': 'productCard'}):
-            titulo = i.find('span', {'class': 'nameCard'}).text
-            preco_a_vista = i.find('span', {'class': 'priceCard'}).text
-            avaliacao = len(i.find_all('div', {'class': 'estrelaAvaliacao'}))
-            qtde_avaliacao = i.find('div', {'class': 'labelTotalAvaliacoes'})
-            qtde_avaliacao = qtde_avaliacao.text[1:-1] if qtde_avaliacao is not None else 0
+        for item in sopa.find_all('div', {'class': 'productCard'}):
+            titulo, preco_a_vista, avaliacao, qtde_avaliacao = extrair_infos_produto(item)
         
             titulos.append(titulo)
             precos_a_vista.append(preco_a_vista)
             avaliacoes.append(avaliacao)
             qtde_avaliacoes.append(qtde_avaliacao)
             
-        nav.find_element(By.CLASS_NAME, value='nextLink').click()
+        driver.find_element(By.CLASS_NAME, 'nextLink').click()
         
         p += 1
 
-        if p >= n_pgs+1:
+        if p > NUM_PAGS:
             print("Extração concluída.")
             break
     except Exception as e:
         print("Exceção:", e)
-        nav.refresh()
+        break
 
 # Fechando o webdriver
-nav.close()
+driver.close()
 
 # Criando o DataFrame com as listas
 df = pd.DataFrame()
 df["Nome"] = titulos
-
-# Formatando os separadores de decimais
 df["Preco_a_vista"] = precos_a_vista
-df["Preco_a_vista"] = df["Preco_a_vista"].apply(lambda x: x.split('R$')[1].replace('.', '').replace(',', '.'))
-df["Preco_a_vista"] = df["Preco_a_vista"].astype(float, errors='ignore')
-
 df["Avaliacao"] = avaliacoes
 df["Qtde_Avaliacoes"] = qtde_avaliacoes
 
 print(f"\n{len(df)} registros adicionados.")
 
 # Exportando para CSV
-df.to_csv(nome_arquivo, index=False)
-print(f"Arquivo salvo como {nome_arquivo}")
+df.to_csv(NOME_ARQUIVO, index=False)
+print(f"Arquivo salvo como {NOME_ARQUIVO}.")
