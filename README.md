@@ -6,7 +6,7 @@ Este web scraper tem como objetivo extrair informações de preço e descriçõe
 
 - Python 3
 - Selenium 4.1 e *geckodriver*
-- BeautifulSoup 4.9.3 com *requests 2.2* e *lxml*
+- BeautifulSoup 4.9.3 com *requests 2.2* e *html5lib*
 - Pandas 1.4
 
 ## Atributos extraídos
